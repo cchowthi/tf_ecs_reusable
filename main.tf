@@ -12,6 +12,7 @@ module "alb" {
   unhealthy_threshold        = var.unhealthy_threshold
   timeout                    = var.timeout
   vpc_id                     = var.vpc_id
+  private_subnet_ids         = var.private_subnet_ids
 }
 
 module "ecs_service" {
