@@ -10,7 +10,7 @@ variable "container_image" {
 variable "cpu" {
   description = "CPU units for the task"
   type        = number
-  default     = 512  # Default value set in reusable module
+  default     = 512 # Default value set in reusable module
 }
 
 variable "memory" {
