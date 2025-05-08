@@ -11,6 +11,7 @@ module "alb" {
   interval                   = var.interval
   unhealthy_threshold        = var.unhealthy_threshold
   timeout                    = var.timeout
+  vpc_id                     = var.vpc_id
 }
 
 module "ecs_service" {
@@ -27,4 +28,6 @@ module "ecs_service" {
   image_url       = var.image_url
   region          = var.region
   user            = var.user
+  inbound_sg_id   = module.alb.security_group_id
+  vpc_id          = var.vpc_id
 }

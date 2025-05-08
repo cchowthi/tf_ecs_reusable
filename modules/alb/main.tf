@@ -6,7 +6,7 @@ resource "aws_alb_target_group" "selected" {
   name        = "${var.environment}-${var.app_name}-alb-${random_id.target_group_sufix.hex}"
   port        = var.app_port
   protocol    = "HTTP"
-  vpc_id      = data.aws_vpc.selected.id
+  vpc_id      = var.vpc_id
   target_type = "ip"
 
   health_check {
@@ -27,7 +27,7 @@ resource "aws_alb_target_group" "selected" {
 resource "aws_security_group" "inbound_sg" {
   name        = "${var.environment}-${var.app_name}-inbound-sg"
   description = "Allow HTTP from Anywhere into ALB"
-  vpc_id      = data.aws_vpc.selected.id
+  vpc_id      = var.vpc_id
 
   ingress {
     description = "Inbound from anywhere"

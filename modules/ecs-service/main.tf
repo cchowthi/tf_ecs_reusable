@@ -30,7 +30,7 @@ resource "aws_ecs_task_definition" "app" {
 # Security Group for ECS
 #tfsec:ignore:aws-ec2-no-public-ingress-sgr #tfsec:ignore:aws-ec2-no-public-egress-sgr
 resource "aws_security_group" "ecs_service" {
-  vpc_id      = data.aws_vpc.selected.id
+  vpc_id      = var.vpc_id
   name        = "${var.environment}-${var.app_name}-ecs-service-sg"
   description = "Allow egress from container"
 
@@ -47,7 +47,7 @@ resource "aws_security_group" "ecs_service" {
     from_port       = var.app_port
     to_port         = var.app_port
     protocol        = "tcp"
-    security_groups = [aws_security_group.inbound_sg.id]
+    security_groups = [var.inbound_sg_id]
   }
 
   ingress {

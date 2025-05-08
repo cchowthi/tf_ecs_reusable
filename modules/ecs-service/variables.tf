@@ -60,3 +60,13 @@ variable "user" {
   description = "ECS Docker User"
   type        = string
 }
+
+variable "inbound_sg_id" {
+  description = "The security group ID for inbound traffic"
+  type        = string
+}
+
+variable "vpc_id" {
+  description = "VPC ID"
+  type        = string
+}

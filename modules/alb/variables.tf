@@ -59,3 +59,8 @@ variable "timeout" {
   description = "ALB Target Group Timeout"
   type        = string
 }
+
+variable "vpc_id" {
+  description = "VPC ID"
+  type        = string
+}
