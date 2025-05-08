@@ -7,6 +7,29 @@ variable "app_port" {
   type        = string
 }
 
+variable "cpu" {
+  description = "CPU units for the task"
+  type        = number
+  default     = 512 # Default value set in reusable module
+}
+
+variable "memory" {
+  description = "Memory in MiB for the task"
+  type        = number
+  default     = 1024 # Default value set in reusable module
+}
+
+variable "min" {
+  description = "Minimum Number Of Containers"
+  type        = string
+}
+
+variable "desired_count" {
+  description = "Number of tasks to run"
+  type        = number
+  default     = 2
+}
+
 variable "env_vars" {
   type        = list(map(string))
   description = "ENV VARS for Docker"
