@@ -51,11 +51,21 @@ resource "aws_iam_role_policy" "ecs_execution_policy" {
         Action = [
           "ecr:GetDownloadUrlForLayer",
           "ecr:BatchGetImage",
-          "ecr:BatchCheckLayerAvailability",
+          "ecr:BatchCheckLayerAvailability"
+        ]
+        Resource = [
+          "arn:aws:ecr:${var.region}:${var.aws_account}:repository/${var.app_name}"
+        ]
+      },
+      {
+        Effect = "Allow"
+        Action = [
           "logs:CreateLogStream",
           "logs:PutLogEvents"
         ]
-        Resource = "*"
+        Resource = [
+          "arn:aws:logs:${var.region}:${var.aws_account}:log-group:${var.environment}_fargate_ecs:*"
+        ]
       }
     ]
   })

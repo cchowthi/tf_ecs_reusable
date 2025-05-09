@@ -7,6 +7,11 @@ variable "app_port" {
   type        = string
 }
 
+variable "aws_account" {
+  description = "AWS Account ID"
+  type        = string
+}
+
 variable "cpu" {
   description = "CPU units for the task"
   type        = number

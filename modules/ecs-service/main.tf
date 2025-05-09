@@ -39,6 +39,11 @@ resource "aws_security_group" "ecs_service" {
 resource "aws_ecs_cluster" "fargate" {
   name = "${var.environment}-${var.app_name}-ecs-cluster"
 
+  setting {
+    name  = "containerInsights"
+    value = "enabled"
+  }
+
   tags = {
     Name        = "${var.environment}-${var.app_name}-ecs-cluster"
     Environment = var.environment
@@ -65,6 +70,5 @@ resource "aws_ecs_service" "app" {
   }
 
   # https://github.com/hashicorp/terraform/issues/12634
-  depends_on = [var.alb_listener_arn]
-
+  depends_on = [aws_alb_listener.selected]
 }
