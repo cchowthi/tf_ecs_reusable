@@ -1,6 +1,6 @@
 # Task definition for the app service
 data "template_file" "app" {
-  template = file("${path.module}/app_task_definition.json")
+  template = file("${path.module}/dash_task_definition.jsonn")
 
   vars = {
     env_vars      = jsonencode(var.env_vars)
