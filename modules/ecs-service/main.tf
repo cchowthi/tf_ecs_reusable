@@ -70,5 +70,5 @@ resource "aws_ecs_service" "app" {
   }
 
   # https://github.com/hashicorp/terraform/issues/12634
-  depends_on = [aws_alb_listener.selected]
+  depends_on = [var.alb_listener_arn]
 }
