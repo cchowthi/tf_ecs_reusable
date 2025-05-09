@@ -41,9 +41,9 @@ module "ecs_service" {
   min                = var.min
   private_subnet_ids = var.private_subnet_ids
   region             = var.region
-  target_group_arn   = module.alb.target_group_arn
-  task_family        = module.ecs_task.task_family
-  task_revision      = module.ecs_task.task_revision
+  target_group_arn   = module.alb.alb_arget_group_arn
+  task_family        = module.ecs_task.ecs_task_family
+  task_revision      = module.ecs_task.ecs_task_revision
   user               = var.user
   vpc_id             = var.vpc_id
 }
