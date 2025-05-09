@@ -48,10 +48,9 @@ variable "interval" {
   type        = string
 }
 
-variable "unhealthy_threshold" {
-  default     = "4"
-  description = "ALB Target Group Unhealthy Threshold"
-  type        = string
+variable "private_subnet_ids" {
+  description = "Private Subnet IDs"
+  type        = list(string)
 }
 
 variable "timeout" {
@@ -60,12 +59,13 @@ variable "timeout" {
   type        = string
 }
 
-variable "vpc_id" {
-  description = "VPC ID"
+variable "unhealthy_threshold" {
+  default     = "4"
+  description = "ALB Target Group Unhealthy Threshold"
   type        = string
 }
 
-variable "private_subnet_ids" {
-  description = "Private Subnet IDs"
-  type        = list(string)
+variable "vpc_id" {
+  description = "VPC ID"
+  type        = string
 }

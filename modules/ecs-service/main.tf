@@ -1,77 +1,3 @@
-# Task definition for the app service
-data "template_file" "app" {
-  template = file("${path.module}/dash_task_definition.json")
-
-  vars = {
-    env_vars      = jsonencode(var.env_vars)
-    app_name      = "${var.environment}-${var.app_name}"
-    memory        = var.memory
-    image         = var.image_url
-    region        = var.region
-    port          = var.app_port
-    awslogs-group = "${var.environment}_fargate_ecs"
-    user          = var.user
-
-
-  }
-}
-
-# ECS Execution Role
-resource "aws_iam_role" "ecs_execution_role" {
-  name = "${var.environment}-${var.app_name}-ecs-execution-role"
-
-  assume_role_policy = jsonencode({
-    Version = "2012-10-17"
-    Statement = [
-      {
-        Effect = "Allow"
-        Principal = {
-          Service = "ecs-tasks.amazonaws.com"
-        }
-        Action = "sts:AssumeRole"
-      }
-    ]
-  })
-
-  tags = {
-    Name        = "${var.environment}-${var.app_name}-ecs-execution-role"
-    Environment = var.environment
-  }
-}
-
-# ECS Execution Role Policy
-resource "aws_iam_role_policy" "ecs_execution_policy" {
-  name = "${var.environment}-${var.app_name}-ecs-execution-policy"
-  role = aws_iam_role.ecs_execution_role.id
-  policy = jsonencode({
-    Version = "2012-10-17"
-    Statement = [
-      {
-        Effect = "Allow"
-        Action = [
-          "ecr:GetDownloadUrlForLayer",
-          "ecr:BatchGetImage",
-          "ecr:BatchCheckLayerAvailability",
-          "logs:CreateLogStream",
-          "logs:PutLogEvents"
-        ]
-        Resource = "*"
-      }
-    ]
-  })
-}
-
-resource "aws_ecs_task_definition" "app" {
-  family                   = "${var.environment}-${var.app_name}"
-  container_definitions    = data.template_file.app.rendered
-  requires_compatibilities = ["FARGATE"]
-  network_mode             = "awsvpc"
-  cpu                      = var.cpu
-  memory                   = var.memory
-  execution_role_arn       = aws_iam_role.ecs_execution_role.arn
-  task_role_arn            = aws_iam_role.ecs_execution_role.arn
-}
-
 # Security Group for ECS
 #tfsec:ignore:aws-ec2-no-public-ingress-sgr #tfsec:ignore:aws-ec2-no-public-egress-sgr
 resource "aws_security_group" "ecs_service" {
@@ -109,30 +35,36 @@ resource "aws_security_group" "ecs_service" {
   }
 }
 
+# ECS Cluster
+resource "aws_ecs_cluster" "fargate" {
+  name = "${var.environment}-${var.app_name}-ecs-cluster"
+
+  tags = {
+    Name        = "${var.environment}-${var.app_name}-ecs-cluster"
+    Environment = var.environment
+  }
+}
+
 # Service for ECS
 resource "aws_ecs_service" "app" {
   name            = "${var.environment}-${var.app_name}"
-  task_definition = "${aws_ecs_task_definition.app.family}:${max("${aws_ecs_task_definition.app.revision}", "${data.aws_ecs_task_definition.app.revision}")}"
+  task_definition = "${var.task_family}:${max("${var.task_revision}", "${var.task_revision}")}"
   desired_count   = var.min
   launch_type     = "FARGATE"
-  cluster         = data.aws_ecs_cluster.fargate.id
+  cluster         = aws_ecs_cluster.fargate.id
 
   network_configuration {
     security_groups = [aws_security_group.ecs_service.id]
-    subnets         = flatten([data.aws_subnet.private[*].id])
+    subnets         = flatten(var.private_subnet_ids)
   }
 
   load_balancer {
-    target_group_arn = aws_alb_target_group.selected.arn
+    target_group_arn = var.target_group_arn
     container_name   = "${var.environment}-${var.app_name}"
     container_port   = var.app_port
   }
 
   # https://github.com/hashicorp/terraform/issues/12634
-  depends_on = [aws_alb_listener.selected]
+  depends_on = [var.alb_listener_arn]
 
-  service_registries {
-    registry_arn   = aws_service_discovery_service.terraform.arn
-    container_name = "${var.environment}-${var.app_name}"
-  }
 }
