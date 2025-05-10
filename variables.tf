@@ -38,7 +38,7 @@ variable "desired_count" {
 variable "relative_path" {
   description = "Relative path to the source directory"
   type        = string
-  default     = "../../../"
+  default     = "../../../../../"
 }
 
 variable "docker_path" {
