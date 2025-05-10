@@ -15,6 +15,16 @@ module "alb" {
   vpc_id                     = var.vpc_id
 }
 
+module "docker" {
+  source              = "./modules/docker"
+  aws_account         = var.aws_account
+  docker_path         = var.docker_path
+  relative_path       = var.relative_path
+  ecr_repo_name       = var.ecr_repo_name
+  force_image_rebuild = var.force_image_rebuild
+  region              = var.region
+}
+
 module "ecs_task" {
   source      = "./modules/ecs-task"
   app_name    = var.app_name
@@ -23,7 +33,7 @@ module "ecs_task" {
   cpu         = var.cpu
   env_vars    = var.env_vars
   environment = var.environment
-  image_url   = var.image_url
+  image_url   = module.docker.image_uri
   memory      = var.memory
   region      = var.region
   user        = var.user
@@ -34,10 +44,9 @@ module "ecs_service" {
   alb_listener_arn   = module.alb.alb_listener_arn
   app_name           = var.app_name
   app_port           = var.app_port
-  container_image    = var.image_url
   desired_count      = var.desired_count
   environment        = var.environment
-  image_url          = var.image_url
+  image_url          = module.docker.image_uri
   inbound_sg_id      = module.alb.security_group_id
   min                = var.min
   private_subnet_ids = var.private_subnet_ids

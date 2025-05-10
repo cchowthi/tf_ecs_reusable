@@ -35,6 +35,21 @@ variable "desired_count" {
   default     = 2
 }
 
+variable "relative_path" {
+  description = "Relative path to the source directory"
+  type        = string
+  default     = "../../../"
+}
+
+variable "docker_path" {
+  description = "Path to the Dockerfile and app files"
+  type        = string
+}
+variable "ecr_repo_name" {
+  description = "The environment"
+  type        = string
+}
+
 variable "env_vars" {
   type        = list(map(string))
   description = "ENV VARS for Docker"
@@ -45,9 +60,9 @@ variable "environment" {
   type        = string
 }
 
-variable "image_url" {
-  description = "The environment"
-  type        = string
+variable "force_image_rebuild" {
+  type    = bool
+  default = false
 }
 
 variable "region" {

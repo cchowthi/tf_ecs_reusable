@@ -11,11 +11,6 @@ variable "app_port" {
   type        = string
 }
 
-variable "container_image" {
-  description = "The Docker image for the app"
-  type        = string
-}
-
 variable "desired_count" {
   description = "Number of tasks to run"
   type        = number
