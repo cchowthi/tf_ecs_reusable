@@ -5,8 +5,10 @@ locals {
   ecr_repo  = var.ecr_repo_name
 
 
-  dkr_img_src_path   = "${path.module}/${var.relative_path}${var.docker_path}"
-  dkr_img_src_sha256 = sha256(join("", [for f in fileset(".", "${local.dkr_img_src_path}/**") : filesha256(f)]))
+  dkr_img_src_path = "${path.module}/${var.relative_path}${var.docker_path}"
+  dkr_img_src_sha256 = sha256(join("", [
+    for f in sort(fileset(local.dkr_img_src_path, "*.py,*.properties,*.txt")) : filesha256(f)
+  ]))
 
   dkr_build_cmd = <<EOT
 find ${local.dkr_img_src_path} -name "*.py" -exec chmod 744 {} \; && \
