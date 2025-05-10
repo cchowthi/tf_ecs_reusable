@@ -14,7 +14,7 @@ locals {
 find ${local.dkr_img_src_path} -name "*.py" -exec chmod 744 {} \; && \
 find ${local.dkr_img_src_path} -name "*.properties" -exec chmod 744 {} \; && \
 docker build --platform=linux/amd64 -t ${local.ecr_reg}/${local.ecr_repo}:latest \
-    -f ${local.dkr_img_src_path}/Dockerfile ${local.dkr_img_src_path} && \
+    -f ${local.dkr_img_src_path}Dockerfile_app ${local.dkr_img_src_path} && \
 aws ecr get-login-password --region ${var.region} | \
     docker login --username AWS --password-stdin ${local.ecr_reg} && \
 docker push ${local.ecr_reg}/${local.ecr_repo}:latest
