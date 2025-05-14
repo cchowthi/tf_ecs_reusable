@@ -15,6 +15,16 @@ module "alb" {
   vpc_id                     = var.vpc_id
 }
 
+module "ecr" {
+  source           = "./modules/ecr"
+  ecr_repo_name    = var.ecr_repo_name
+  image_mutability = var.image_mutability
+  encrypt_type     = var.encrypt_type
+  tags = {
+    "Environment" = var.environment
+  }
+}
+
 module "docker" {
   source              = "./modules/docker"
   aws_account         = var.aws_account

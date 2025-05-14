@@ -35,6 +35,18 @@ variable "desired_count" {
   default     = 2
 }
 
+variable "encrypt_type" {
+  description = "Provide type of encryption here"
+  type        = string
+  default     = "KMS"
+}
+
+variable "image_mutability" {
+  description = "Provide image mutability"
+  type        = string
+  default     = "IMMUTABLE"
+}
+
 variable "relative_path" {
   description = "Relative path to the source directory"
   type        = string
