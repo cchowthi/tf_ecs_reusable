@@ -15,6 +15,4 @@ variable "encrypt_type" {
 
 variable "tags" {
   description = "Tags for the ECR repository"
-  type        = map(string)
-  default     = {}
 }
