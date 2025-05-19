@@ -7,7 +7,8 @@ locals {
 
   dkr_img_src_path = "${path.module}/${var.relative_path}${var.docker_path}"
   dkr_img_src_sha256 = sha256(join("", [
-    for f in sort(fileset(local.dkr_img_src_path, "*.py,*.properties,*.txt,Docker*")) : filesha256(f)
+    for f in sort(fileset(".", "${local.dkr_img_src_path}/**")) :
+    f if startswith(f, "Dockerfile") || endswith(f, ".py") || endswith(f, ".txt") || endswith(f, ".properties")
   ]))
 
   dkr_build_cmd = <<EOT
