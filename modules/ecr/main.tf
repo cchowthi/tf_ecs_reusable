@@ -12,4 +12,7 @@ resource "aws_ecr_repository" "ecr_repo" {
     encryption_type = "KMS"
   }
   tags = var.tags
+  lifecycle {
+    ignore_changes = all
+  }
 }
