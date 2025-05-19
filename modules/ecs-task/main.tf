@@ -67,6 +67,7 @@ resource "aws_iam_role_policy" "ecs_execution_policy" {
       {
         Effect = "Allow"
         Action = [
+          "logs:CreateLogGroup",
           "logs:CreateLogStream",
           "logs:PutLogEvents"
         ]
