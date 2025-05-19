@@ -18,6 +18,11 @@ variable "cpu" {
   default     = 512 # Default value set in reusable module
 }
 
+variable "ecr_repo" {
+  type        = string
+  description = "ECR Repository for Docker"
+}
+
 variable "env_vars" {
   type        = list(map(string))
   description = "ENV VARS for Docker"

@@ -55,7 +55,7 @@ resource "aws_iam_role_policy" "ecs_execution_policy" {
           "ecr:BatchCheckLayerAvailability"
         ]
         Resource = [
-          "arn:aws:ecr:${var.region}:${var.aws_account}:repository/${var.app_name}"
+          "arn:aws:ecr:${var.region}:${var.aws_account}:repository/${var.ecr_repo}"
         ]
       },
       {
