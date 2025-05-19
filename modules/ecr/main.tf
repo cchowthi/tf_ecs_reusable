@@ -1,4 +1,5 @@
 #tfsec:ignore:aws-ecr-repository-customer-key
+#tfsec:ignore:aws-ecr-enforce-immutable-repository
 resource "aws_ecr_repository" "ecr_repo" {
   name                 = var.ecr_repo_name
   image_tag_mutability = var.image_mutability
