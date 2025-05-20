@@ -6,6 +6,7 @@ locals {
 
 
   dkr_img_src_path = "${path.module}/${var.relative_path}${var.docker_path}"
+
   dkr_img_src_sha256 = sha256(join("", [
     for f in sort(fileset(local.dkr_img_src_path, "*")) :
     filesha256("${local.dkr_img_src_path}${f}") if strcontains(f, "Dockerfile") || endswith(f, ".py") || endswith(f, ".txt") || endswith(f, ".properties")
@@ -21,6 +22,13 @@ aws ecr get-login-password --region ${var.region} | \
 docker push ${local.ecr_reg}/${local.ecr_repo}:latest
 EOT
 
+}
+
+output "included_files_for_hash" {
+  value = [
+    for f in sort(fileset(local.dkr_img_src_path, "*")) :
+    "${local.dkr_img_src_path}${f}" if strcontains(f, "Dockerfile") || endswith(f, ".py") || endswith(f, ".txt") || endswith(f, ".properties")
+  ]
 }
 
 # local-exec for build and push of docker image
