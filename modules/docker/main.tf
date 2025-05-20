@@ -12,9 +12,13 @@ locals {
     f
   ]
 
+  app_files = [
+    for f in sort(fileset(local.dkr_img_src_path, "**")) :
+    f if strcontains(f, "Dockerfile") || strcontains(f, "assets") || endswith(f, ".py") || endswith(f, ".txt") || endswith(f, ".properties")
+  ]
+
   dkr_img_src_sha256 = sha256(join("", [
-    for f in sort(fileset(local.dkr_img_src_path, "*")) :
-    filesha256("${local.dkr_img_src_path}${f}") if strcontains(f, "Dockerfile") || strcontains(f, "assets") || endswith(f, ".py") || endswith(f, ".txt") || endswith(f, ".properties")
+    for f in local.app_files : filesha256("${local.dkr_img_src_path}${f}")
   ]))
 
   dkr_build_cmd = <<EOT
@@ -29,14 +33,24 @@ EOT
 
 }
 
-resource "null_resource" "debug_included_files" {
+resource "null_resource" "debug_all_files" {
   provisioner "local-exec" {
     command = <<EOT
-echo "Included files for hash:"
+echo "Listing all files:"
 echo ${join(" ", local.all_files)}
 EOT
   }
 }
+
+resource "null_resource" "debug_app_files" {
+  provisioner "local-exec" {
+    command = <<EOT
+echo "Included files for hash:"
+echo ${join(" ", local.app_files)}
+EOT
+  }
+}
+
 
 # local-exec for build and push of docker image
 resource "null_resource" "build_push_dkr_img" {
