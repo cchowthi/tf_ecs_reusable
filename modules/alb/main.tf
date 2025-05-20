@@ -74,7 +74,7 @@ resource "aws_alb" "selected" {
 #tfsec:ignore:aws-elb-http-not-used
 resource "aws_alb_listener" "selected" {
   load_balancer_arn = aws_alb.selected.arn
-  port              = "80"
+  port              = var.app_port
   protocol          = "HTTP"
   depends_on        = [aws_alb_target_group.selected]
 
