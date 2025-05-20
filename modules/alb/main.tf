@@ -31,8 +31,8 @@ resource "aws_security_group" "inbound_sg" {
 
   ingress {
     description = "Inbound from anywhere"
-    from_port   = 80
-    to_port     = 80
+    from_port   = var.app_port
+    to_port     = var.app_port
     protocol    = "tcp"
     cidr_blocks = ["0.0.0.0/0"]
   }
