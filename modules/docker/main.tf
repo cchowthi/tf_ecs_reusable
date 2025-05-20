@@ -9,7 +9,7 @@ locals {
 
   dkr_img_src_sha256 = sha256(join("", [
     for f in sort(fileset(local.dkr_img_src_path, "*")) :
-    filesha256("${local.dkr_img_src_path}${f}") if strcontains(f, "Dockerfile") || endswith(f, ".py") || endswith(f, ".txt") || endswith(f, ".properties")
+    filesha256("${local.dkr_img_src_path}${f}") if !(startswith(f, "terraform/"))
   ]))
 
   dkr_build_cmd = <<EOT
@@ -27,7 +27,7 @@ EOT
 output "included_files_for_hash" {
   value = [
     for f in sort(fileset(local.dkr_img_src_path, "*")) :
-    "${local.dkr_img_src_path}${f}" if strcontains(f, "Dockerfile") || endswith(f, ".py") || endswith(f, ".txt") || endswith(f, ".properties")
+    "${local.dkr_img_src_path}${f}" if !(startswith(f, "terraform/"))
   ]
 }
 

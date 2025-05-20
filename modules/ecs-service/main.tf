@@ -58,6 +58,11 @@ resource "aws_ecs_service" "app" {
   launch_type     = "FARGATE"
   cluster         = aws_ecs_cluster.fargate.id
 
+  capacity_provider_strategy {
+    capacity_provider = "FARGATE"
+    weight            = 1
+  }
+
   network_configuration {
     security_groups = [aws_security_group.ecs_service.id]
     subnets         = flatten(var.private_subnet_ids)
