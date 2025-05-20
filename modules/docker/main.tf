@@ -9,7 +9,7 @@ locals {
 
   dkr_img_src_sha256 = sha256(join("", [
     for f in sort(fileset(local.dkr_img_src_path, "**")) :
-    filesha256("${local.dkr_img_src_path}${f}") if !(strcontains(f, "terraform"))
+    filesha256("${local.dkr_img_src_path}${f}") if !(strcontains(f, ".terraform"))
   ]))
 
   dkr_build_cmd = <<EOT
@@ -30,7 +30,7 @@ resource "null_resource" "debug_included_files" {
 echo "Included files for hash:"
 echo ${join(" ", [
     for f in sort(fileset(local.dkr_img_src_path, "**")) :
-    "${local.dkr_img_src_path}${f}" if !(strcontains(f, "terraform"))
+    f if !(strcontains(f, ".terraform"))
 ])}
 EOT
 }
