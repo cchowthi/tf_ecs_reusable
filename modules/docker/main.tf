@@ -7,18 +7,28 @@ locals {
 
   dkr_img_src_path = "${path.module}/${var.relative_path}${var.docker_path}"
 
-  all_files = [
+  all_files_list = [
     for f in sort(fileset(local.dkr_img_src_path, "**")) :
     f
   ]
 
-  app_files = [
+  all_files = join(" ", local.all_files_list)
+
+  app_files_list = [
     for f in sort(fileset(local.dkr_img_src_path, "**")) :
-    f if strcontains(f, "Dockerfile") || strcontains(f, "assets") || endswith(f, ".py") || endswith(f, ".txt") || endswith(f, ".properties") || !startswith(f, "terraform") || !startswith(f, "tfsec")
+    f if(
+      strcontains(f, "Dockerfile") ||
+      strcontains(f, "assets") ||
+      endswith(f, ".py") ||
+      endswith(f, ".txt") ||
+      endswith(f, ".properties")
+    ) && !startswith(f, "terraform") && !startswith(f, "tfsec")
   ]
 
+  app_files = join(" ", local.app_files_list)
+
   dkr_img_src_sha256 = sha256(join("", [
-    for f in local.app_files : filesha256("${local.dkr_img_src_path}${f}")
+    for f in local.app_files_list : filesha256("${local.dkr_img_src_path}${f}")
   ]))
 
   dkr_build_cmd = <<EOT
@@ -37,7 +47,7 @@ resource "null_resource" "debug_all_files" {
   provisioner "local-exec" {
     command = <<EOT
 echo "Listing all files:"
-echo ${join(" ", local.all_files)}
+echo "${local.all_files}"
 EOT
   }
 }
@@ -46,7 +56,7 @@ resource "null_resource" "debug_app_files" {
   provisioner "local-exec" {
     command = <<EOT
 echo "Included files for hash:"
-echo ${join(" ", local.app_files)}
+echo "${local.app_files}"
 EOT
   }
 }
