@@ -8,8 +8,8 @@ locals {
   dkr_img_src_path = "${path.module}/${var.relative_path}${var.docker_path}"
 
   dkr_img_src_sha256 = sha256(join("", [
-    for f in sort(fileset(local.dkr_img_src_path, "*")) :
-    filesha256("${local.dkr_img_src_path}${f}") if !(startswith(f, "terraform/"))
+    for f in sort(fileset(local.dkr_img_src_path, "**")) :
+    filesha256("${local.dkr_img_src_path}${f}") if !(strcontains("${local.dkr_img_src_path}${f}", "terraform/"))
   ]))
 
   dkr_build_cmd = <<EOT
@@ -24,11 +24,16 @@ EOT
 
 }
 
-output "included_files_for_hash" {
-  value = [
-    for f in sort(fileset(local.dkr_img_src_path, "*")) :
-    "${local.dkr_img_src_path}${f}" if !(startswith(f, "terraform/"))
-  ]
+resource "null_resource" "debug_included_files" {
+  provisioner "local-exec" {
+    command = <<EOT
+echo "Included files for hash:"
+echo ${join(" ", [
+    for f in sort(fileset(local.dkr_img_src_path, "**")) :
+    "${local.dkr_img_src_path}${f}" if !(strcontains("${local.dkr_img_src_path}${f}", "terraform/"))
+])}
+EOT
+}
 }
 
 # local-exec for build and push of docker image
