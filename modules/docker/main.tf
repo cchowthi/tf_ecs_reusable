@@ -14,7 +14,7 @@ locals {
 
   app_files = [
     for f in sort(fileset(local.dkr_img_src_path, "**")) :
-    f if strcontains(f, "Dockerfile") || strcontains(f, "assets") || endswith(f, ".py") || endswith(f, ".txt") || endswith(f, ".properties")
+    f if strcontains(f, "Dockerfile") || strcontains(f, "assets") || endswith(f, ".py") || endswith(f, ".txt") || endswith(f, ".properties") || !startswith(f, "terraform") || !startswith(f, "tfsec")
   ]
 
   dkr_img_src_sha256 = sha256(join("", [
