@@ -28,10 +28,10 @@ resource "null_resource" "debug_included_files" {
   provisioner "local-exec" {
     command = <<EOT
 echo "Included files for hash:"
-echo ${join(" ", [
+echo ${join(" ", jsondecode(jsonencode([
     for f in sort(fileset(local.dkr_img_src_path, "**")) :
     f if !(strcontains(f, ".terraform"))
-])}
+])))}
 EOT
 }
 }
