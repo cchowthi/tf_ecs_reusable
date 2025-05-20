@@ -1,24 +1,25 @@
 [
-    {
-      "name": "${app_name}",
-      "image": "${image}",
-      "portMappings": [
-        {
-          "containerPort": ${port},
-          "hostPort": ${port}
-        }
-      ],
-      "memory": ${memory},
-      "networkMode": "awsvpc",
-      "logConfiguration": {
-        "logDriver": "awslogs",
-        "options": {
-          "awslogs-group": "${awslogs-group}",
-          "awslogs-region": "${region}",
-          "awslogs-create-group": "true",
-          "awslogs-stream-prefix": "${app_name}"
-        }
-      },
-      "environment": ${env_vars}
-    }
-  ]
+  {
+    "name": "${app_name}",
+    "image": "${image}",
+    "portMappings": [
+      {
+        "containerPort": ${port},
+        "hostPort": ${port},
+        "appProtocol": "http"
+      }
+    ],
+    "memory": ${memory},
+    "networkMode": "awsvpc",
+    "logConfiguration": {
+      "logDriver": "awslogs",
+      "options": {
+        "awslogs-group": "${awslogs-group}",
+        "awslogs-region": "${region}",
+        "awslogs-create-group": "true",
+        "awslogs-stream-prefix": "${app_name}"
+      }
+    },
+    "environment": ${env_vars}
+  }
+]
