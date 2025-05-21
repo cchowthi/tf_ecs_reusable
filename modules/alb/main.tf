@@ -3,7 +3,7 @@ resource "random_id" "target_group_sufix" {
 }
 
 resource "aws_alb_target_group" "selected" {
-  name        = "${var.environment}-${var.app_name}-alb-${random_id.target_group_sufix.hex}"
+  name        = "${var.environment}-${var.app_name}-${random_id.target_group_sufix.hex}"
   port        = var.app_port
   protocol    = "HTTP"
   vpc_id      = var.vpc_id
@@ -31,17 +31,17 @@ resource "aws_security_group" "inbound_sg" {
 
   ingress {
     description = "Inbound from anywhere"
-    from_port   = var.app_port
-    to_port     = var.app_port
+    from_port   = 80
+    to_port     = 80
     protocol    = "tcp"
     cidr_blocks = ["0.0.0.0/0"]
   }
 
   ingress {
     description = "inbound icmp from anywhere"
-    from_port   = 8
-    to_port     = 0
-    protocol    = "icmp"
+    from_port   = 443
+    to_port     = 443
+    protocol    = "tcp"
     cidr_blocks = ["0.0.0.0/0"]
   }
 
@@ -74,7 +74,7 @@ resource "aws_alb" "selected" {
 #tfsec:ignore:aws-elb-http-not-used
 resource "aws_alb_listener" "selected" {
   load_balancer_arn = aws_alb.selected.arn
-  port              = var.app_port
+  port              = 80
   protocol          = "HTTP"
   depends_on        = [aws_alb_target_group.selected]
 
