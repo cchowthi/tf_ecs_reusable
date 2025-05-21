@@ -3,7 +3,7 @@ resource "random_id" "target_group_sufix" {
 }
 
 resource "aws_alb_target_group" "selected" {
-  name        = "${var.environment}-${var.app_name}-${random_id.target_group_sufix.hex}"
+  name        = "${var.environment}-${var.app_name}-alb-${random_id.target_group_sufix.hex}"
   port        = var.app_port
   protocol    = "HTTP"
   vpc_id      = var.vpc_id
