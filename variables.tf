@@ -27,6 +27,7 @@ variable "memory" {
 variable "min" {
   description = "Minimum Number Of Containers"
   type        = string
+  default     = "1"
 }
 
 variable "desired_count" {
@@ -113,13 +114,13 @@ variable "healthy_threshold" {
 }
 
 variable "idle_timeout" {
-  default     = "60"
+  default     = "120"
   description = "ALB Idle Timeout"
   type        = string
 }
 
 variable "interval" {
-  default     = "30"
+  default     = "60"
   description = "ALB Target Group Interval"
   type        = string
 }
@@ -131,7 +132,7 @@ variable "unhealthy_threshold" {
 }
 
 variable "timeout" {
-  default     = "10"
+  default     = "30"
   description = "ALB Target Group Timeout"
   type        = string
 }
