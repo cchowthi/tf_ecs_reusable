@@ -39,6 +39,7 @@ module "ecs_task" {
   source      = "./modules/ecs-task"
   app_name    = var.app_name
   app_port    = var.app_port
+  bucket_name = var.bucket_name
   aws_account = var.aws_account
   cpu         = var.cpu
   ecr_repo    = var.ecr_repo_name
