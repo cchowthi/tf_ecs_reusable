@@ -118,8 +118,8 @@ resource "aws_ecs_task_definition" "app" {
       },
       "environment" : [
         for k, v in var.env_vars : {
-          "name" : k,
-          "value" : v
+          "name" : tostring(k),
+          "value" : tostring(v)
         }
       ]
     }
