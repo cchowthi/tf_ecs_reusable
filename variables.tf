@@ -69,7 +69,7 @@ variable "ecr_repo_name" {
 }
 
 variable "env_vars" {
-  type        = list(map(string))
+  type        = map(string)
   description = "ENV VARS for Docker"
 }
 
