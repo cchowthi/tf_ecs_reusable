@@ -4,7 +4,7 @@ variable "app_name" {
 
 variable "app_port" {
   description = "Port App Listens On"
-  type        = string
+  type        = number
 }
 
 variable "aws_account" {
