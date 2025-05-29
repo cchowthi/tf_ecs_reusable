@@ -93,8 +93,37 @@ resource "aws_iam_role_policy" "ecs_execution_policy" {
 }
 
 resource "aws_ecs_task_definition" "app" {
-  family                   = "${var.environment}-${var.app_name}"
-  container_definitions    = data.template_file.app.rendered
+  family = "${var.environment}-${var.app_name}"
+  container_definitions = jsonencode([
+    {
+      "name" : "${var.environment}-${var.app_name}",
+      "image" : var.image_url,
+      "portMappings" : [
+        {
+          "containerPort" : var.app_port,
+          "hostPort" : var.app_port,
+          "appProtocol" : "http"
+        }
+      ],
+      "memory" : var.memory,
+      "networkMode" : "awsvpc",
+      "logConfiguration" : {
+        "logDriver" : "awslogs",
+        "options" : {
+          "awslogs-group" : "${var.environment}_fargate_ecs",
+          "awslogs-region" : var.region,
+          "awslogs-create-group" : "true",
+          "awslogs-stream-prefix" : "${var.environment}-${var.app_name}"
+        }
+      },
+      "environment" : [
+        for k, v in var.env_vars : {
+          "name" : k,
+          "value" : v
+        }
+      ]
+    }
+  ])
   requires_compatibilities = ["FARGATE"]
   network_mode             = "awsvpc"
   cpu                      = var.cpu
