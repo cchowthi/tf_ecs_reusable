@@ -1,9 +1,5 @@
-resource "random_id" "target_group_sufix" {
-  byte_length = 2
-}
-
 resource "aws_alb_target_group" "selected" {
-  name        = "${var.environment}-${var.app_name}-alb-${random_id.target_group_sufix.hex}"
+  name        = "${var.environment}-${var.app_name}"
   port        = var.app_port
   protocol    = "HTTP"
   vpc_id      = var.vpc_id
