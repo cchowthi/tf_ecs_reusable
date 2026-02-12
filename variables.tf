@@ -69,9 +69,13 @@ variable "ecr_repo_name" {
 }
 
 variable "env_vars" {
-  type        = map(string)
+  type = list(object({
+    name  = string
+    value = string
+  }))
   description = "ENV VARS for Docker"
 }
+
 
 variable "environment" {
   description = "The environment"

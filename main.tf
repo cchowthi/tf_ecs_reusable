@@ -46,7 +46,7 @@ module "ecs_task" {
   env_vars    = var.env_vars
   environment = var.environment
   image_url   = module.docker.image_uri
-  task_memory = var.taskmemory
+  task_memory = var.task_memory
   region      = var.region
   user        = var.user
 }
