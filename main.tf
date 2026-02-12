@@ -41,12 +41,12 @@ module "ecs_task" {
   app_port    = var.app_port
   bucket_name = var.bucket_name
   aws_account = var.aws_account
-  cpu         = var.cpu
+  task_cpu    = var.task_cpu
   ecr_repo    = var.ecr_repo_name
   env_vars    = var.env_vars
   environment = var.environment
   image_url   = module.docker.image_uri
-  memory      = var.memory
+  task_memory = var.memory
   region      = var.region
   user        = var.user
 }

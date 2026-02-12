@@ -17,13 +17,13 @@ variable "bucket_name" {
   type        = string
 }
 
-variable "cpu" {
+variable "task_cpu" {
   description = "CPU units for the task"
   type        = number
   default     = 512 # Default value set in reusable module
 }
 
-variable "memory" {
+variable "task_memory" {
   description = "Memory in MiB for the task"
   type        = number
   default     = 1024 # Default value set in reusable module

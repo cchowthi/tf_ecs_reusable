@@ -1,19 +1,115 @@
-# Task definition for the app service
-data "template_file" "app" {
-  template = file("${path.module}/dash_task_definition.json")
 
-  vars = {
-    env_vars      = jsonencode(var.env_vars)
-    app_name      = "${var.environment}-${var.app_name}"
-    memory        = var.memory
-    image         = var.image_url
-    region        = var.region
-    port          = var.app_port
-    awslogs-group = "${var.environment}_fargate_ecs"
-    user          = var.user
-
-
-  }
+locals {
+  container_definitions = jsonencode([
+    {
+      name      = "${var.environment}-${var.app_name}"
+      app_name  = "${var.environment}-${var.app_name}"
+      image     = var.image_url
+      cpu       = var.cpu
+      memory    = var.memory
+      essential = true
+      portMappings = [
+        {
+          containerPort = var.app_port
+          hostPort      = var.app_port
+        }
+      ]
+      command = [
+        "-Dsonar.search.javaAdditionalOpts=-Dnode.store.allow_mmap=false"
+      ]
+      environment = var.env_vars
+      mountPoints = [
+        {
+          "sourceVolume" : "service-storage",
+          "containerPath" : var.container_path,
+          "readOnly" : false
+        }
+      ]
+      linuxParameters = {
+        "initProcessEnabled" : true
+      }
+      secrets = [
+        {
+          "name" : "SONAR_JDBC_URL",
+          "valueFrom" : "arn:aws:ssm:${var.region}:${data.aws_caller_identity.current.account_id}:parameter/${var.environment}/${var.app_name}/rds/db_instance_endpoint"
+        },
+        {
+          "name" : "SONAR_JDBC_NAME",
+          "valueFrom" : "arn:aws:ssm:${var.region}:${data.aws_caller_identity.current.account_id}:parameter/${var.environment}/${var.app_name}/rds/db_instance_name"
+        },
+        {
+          "name" : "SONAR_JDBC_USERNAME",
+          "valueFrom" : "arn:aws:secretsmanager:${var.region}:${data.aws_caller_identity.current.account_id}:secret:/${local.rds_secret_username}"
+        },
+        {
+          "name" : "SONAR_JDBC_PASSWORD",
+          "valueFrom" : "arn:aws:secretsmanager:${var.region}:${data.aws_caller_identity.current.account_id}:secret:/${local.rds_secret_password}"
+        }
+      ]
+      ulimits = [
+        {
+          "name" : "nofile",
+          "softLimit" : 65535,
+          "hardLimit" : 65535
+        }
+      ]
+      logConfiguration = {
+        "logDriver" : "awslogs",
+        "options" : {
+          "awslogs-create-group" : "true",
+          "awslogs-group" : "${var.environment}_fargate_ecs",
+          "awslogs-region" : "${var.region}",
+          "awslogs-stream-prefix" : "${var.environment}-sonarqube"
+        }
+      }
+    },
+    # TwistlockDefender sidecar container
+    {
+      name      = "TwistlockDefender"
+      image     = var.twistlock_defender_image
+      cpu       = var.twistlock_cpu
+      memory    = var.twistlock_memory
+      essential = false
+      entryPoint = [
+        "/usr/local/bin/defender",
+        "fargate",
+        "sidecar"
+      ]
+      environment = [
+        { name = "INSTALL_BUNDLE", value = var.twistlock_install_bundle },
+        { name = "DEFENDER_TYPE", value = "fargate" },
+        { name = "FARGATE_TASK", value = "${var.environment}-${var.app_name}" },
+        { name = "WS_ADDRESS", value = var.twistlock_ws_address },
+        { name = "FILESYSTEM_MONITORING", value = "false" },
+        { name = "FIPS_ENABLED", value = "false" },
+        { name = "DEBUG", value = "true" }
+      ]
+      healthCheck = {
+        command     = ["/usr/local/bin/defender", "fargate", "healthcheck"]
+        interval    = 5
+        retries     = 3
+        startPeriod = 1
+        timeout     = 5
+      }
+      logConfiguration = {
+        "logDriver" : "awslogs",
+        "options" : {
+          "awslogs-create-group" : "true",
+          "awslogs-group" : "${var.environment}_fargate_ecs",
+          "awslogs-region" : "${var.region}",
+          "awslogs-stream-prefix" : "${var.environment}-sonarqube"
+        }
+      }
+      portMappings = []
+      mountPoints = [
+        {
+          sourceVolume  = "service-storage"
+          containerPath = "/data"
+          readOnly      = false
+        }
+      ]
+    }
+  ])
 }
 
 # ECS Execution Role
@@ -93,41 +189,27 @@ resource "aws_iam_role_policy" "ecs_execution_policy" {
 }
 
 resource "aws_ecs_task_definition" "app" {
-  family = "${var.environment}-${var.app_name}"
-  container_definitions = jsonencode([
-    {
-      "name" : "${var.environment}-${var.app_name}",
-      "image" : var.image_url,
-      "portMappings" : [
-        {
-          "containerPort" : var.app_port,
-          "hostPort" : var.app_port,
-          "appProtocol" : "http"
-        }
-      ],
-      "memory" : var.memory,
-      "networkMode" : "awsvpc",
-      "logConfiguration" : {
-        "logDriver" : "awslogs",
-        "options" : {
-          "awslogs-group" : "${var.environment}_fargate_ecs",
-          "awslogs-region" : var.region,
-          "awslogs-create-group" : "true",
-          "awslogs-stream-prefix" : "${var.environment}-${var.app_name}"
-        }
-      },
-      "environment" : [
-        for k, v in var.env_vars : {
-          "name" : tostring(k),
-          "value" : tostring(v)
-        }
-      ]
-    }
-  ])
+  family                   = "${var.environment}-${var.app_name}"
+  container_definitions    = local.container_definitions
   requires_compatibilities = ["FARGATE"]
   network_mode             = "awsvpc"
-  cpu                      = var.cpu
-  memory                   = var.memory
+  cpu                      = var.task_cpu
+  memory                   = var.task_memory
   execution_role_arn       = aws_iam_role.ecs_execution_role.arn
   task_role_arn            = aws_iam_role.ecs_execution_role.arn
+
+  volume {
+    name = "service-storage"
+    efs_volume_configuration {
+      file_system_id          = aws_efs_file_system.service-storage.id
+      transit_encryption      = "ENABLED"
+      transit_encryption_port = 2999
+      authorization_config {
+        access_point_id = aws_efs_access_point.service-storage.id
+        iam             = "ENABLED"
+      }
+    }
+  }
+
+  tags = local.common_tags
 }
