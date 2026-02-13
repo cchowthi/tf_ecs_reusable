@@ -17,10 +17,22 @@ variable "bucket_name" {
   type        = string
 }
 
+variable "cpu" {
+  description = "CPU units for the app"
+  type        = number
+  default     = 4096 # Default value set in reusable module
+}
+
 variable "task_cpu" {
   description = "CPU units for the task"
   type        = number
   default     = 512 # Default value set in reusable module
+}
+
+variable "memory" {
+  description = "Memory in MiB for the app"
+  type        = number
+  default     = 16384 # Default value set in reusable module
 }
 
 variable "task_memory" {

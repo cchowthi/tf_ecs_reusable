@@ -18,13 +18,6 @@ locals {
         "-Dsonar.search.javaAdditionalOpts=-Dnode.store.allow_mmap=false"
       ]
       environment = var.env_vars
-      mountPoints = [
-        {
-          "sourceVolume" : "service-storage",
-          "containerPath" : var.container_path,
-          "readOnly" : false
-        }
-      ]
       linuxParameters = {
         "initProcessEnabled" : true
       }
