@@ -76,13 +76,7 @@ locals {
         }
       }
       portMappings = []
-      mountPoints = [
-        {
-          sourceVolume  = "service-storage"
-          containerPath = "/data"
-          readOnly      = false
-        }
-      ]
+      mountPoints  = []
     }
   ])
 }
