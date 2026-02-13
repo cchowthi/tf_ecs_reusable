@@ -172,19 +172,8 @@ resource "aws_ecs_task_definition" "app" {
   memory                   = var.task_memory
   execution_role_arn       = aws_iam_role.ecs_execution_role.arn
   task_role_arn            = aws_iam_role.ecs_execution_role.arn
-
-  volume {
-    name = "service-storage"
-    efs_volume_configuration {
-      file_system_id          = aws_efs_file_system.service-storage.id
-      transit_encryption      = "ENABLED"
-      transit_encryption_port = 2999
-      authorization_config {
-        access_point_id = aws_efs_access_point.service-storage.id
-        iam             = "ENABLED"
-      }
-    }
+  tags = {
+    Name        = "${var.environment}-${var.app_name}-ecs-task"
+    Environment = var.environment
   }
-
-  tags = local.common_tags
 }
