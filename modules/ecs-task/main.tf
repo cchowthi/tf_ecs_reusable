@@ -48,9 +48,9 @@ locals {
     # TwistlockDefender sidecar container
     {
       name      = "TwistlockDefender"
-      image     = var.twistlock_defender_image
-      cpu       = var.twistlock_cpu
-      memory    = var.twistlock_memory
+      image     = "registry-auth.twistlock.com/tw_mfxrfydek289ufo4ch0qs5avbn4xr5ga/twistlock/defender:defender_34_03_138"
+      cpu       = 4096
+      memory    = 16384
       essential = false
       entryPoint = [
         "/usr/local/bin/defender",
@@ -58,10 +58,10 @@ locals {
         "sidecar"
       ]
       environment = [
-        { name = "INSTALL_BUNDLE", value = var.twistlock_install_bundle },
+        { name = "INSTALL_BUNDLE", value = "eyJzZWNyZXRzIjp7InNlcnZpY2UtcGFyYW1ldGVyIjoiY2xEWVR4UDErcUp3VVhsZDVhZldqa3JyM3g2ZitSZFBKdFZtN21JVXVQNHNvemFxN0FEcTVKYk1FUWNCQTRwaGovODA5OU9HU1RQVGw5dUVBcDk5Rmc9PSJ9LCJnbG9iYWxQcm94eU9wdCI6eyJodHRwUHJveHkiOiIiLCJub1Byb3h5IjoiIiwiY2EiOiIiLCJ1c2VyIjoiIiwicGFzc3dvcmQiOnsiZW5jcnlwdGVkIjoiIn19LCJjdXN0b21lcklEIjoidXMtMy0xNTkyNjY4MDMiLCJhcGlLZXkiOiJFZ1FjLzZQWFVtbEdHTGFUY05NeXQxdGphVnBFT2NUcWJBVVlqZkRmNXNQaWRWT0RBa2JSWlkrRU5ZSGxVZXNUMENJa1QrdzhIdWZqRjd4MUp6VUViZz09IiwibWljcm9zZWdDb21wYXRpYmxlIjpmYWxzZX0=" },
         { name = "DEFENDER_TYPE", value = "fargate" },
         { name = "FARGATE_TASK", value = "${var.environment}-${var.app_name}" },
-        { name = "WS_ADDRESS", value = var.twistlock_ws_address },
+        { name = "WS_ADDRESS", value = "wss://us-west1.cloud.twistlock.com:443" },
         { name = "FILESYSTEM_MONITORING", value = "false" },
         { name = "FIPS_ENABLED", value = "false" },
         { name = "DEBUG", value = "true" }
