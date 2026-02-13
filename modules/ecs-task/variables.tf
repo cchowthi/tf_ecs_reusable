@@ -17,10 +17,14 @@ variable "bucket_name" {
   type        = string
 }
 
+variable "cpu" {
+  description = "CPU units for the app"
+  type        = number
+}
+
 variable "task_cpu" {
   description = "CPU units for the task"
   type        = number
-  default     = 512 # Default value set in reusable module
 }
 
 variable "ecr_repo" {
@@ -46,10 +50,14 @@ variable "image_url" {
   type        = string
 }
 
+variable "memory" {
+  description = "Memory in MiB for the app"
+  type        = number
+}
+
 variable "task_memory" {
   description = "Memory in MiB for the task"
   type        = number
-  default     = 1024 # Default value set in reusable module
 }
 
 variable "region" {
