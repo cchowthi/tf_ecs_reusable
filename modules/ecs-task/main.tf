@@ -28,24 +28,6 @@ locals {
       linuxParameters = {
         "initProcessEnabled" : true
       }
-      secrets = [
-        {
-          "name" : "SONAR_JDBC_URL",
-          "valueFrom" : "arn:aws:ssm:${var.region}:${data.aws_caller_identity.current.account_id}:parameter/${var.environment}/${var.app_name}/rds/db_instance_endpoint"
-        },
-        {
-          "name" : "SONAR_JDBC_NAME",
-          "valueFrom" : "arn:aws:ssm:${var.region}:${data.aws_caller_identity.current.account_id}:parameter/${var.environment}/${var.app_name}/rds/db_instance_name"
-        },
-        {
-          "name" : "SONAR_JDBC_USERNAME",
-          "valueFrom" : "arn:aws:secretsmanager:${var.region}:${data.aws_caller_identity.current.account_id}:secret:/${local.rds_secret_username}"
-        },
-        {
-          "name" : "SONAR_JDBC_PASSWORD",
-          "valueFrom" : "arn:aws:secretsmanager:${var.region}:${data.aws_caller_identity.current.account_id}:secret:/${local.rds_secret_password}"
-        }
-      ]
       ulimits = [
         {
           "name" : "nofile",
