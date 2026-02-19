@@ -38,7 +38,7 @@ variable "memory" {
 variable "task_memory" {
   description = "Memory in MiB for the task"
   type        = number
-  default     = 30720 # Must be >= sum of all container memory (16384 + 16384 for TwistlockDefender = 32768, using 30720 as valid Fargate value)
+  default     = 32768 # Must be >= sum of all container memory (16384 + 16384 for TwistlockDefender = 32768). Valid Fargate value for 8192 CPU.
 }
 
 variable "min" {
