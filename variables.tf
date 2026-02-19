@@ -26,7 +26,7 @@ variable "cpu" {
 variable "task_cpu" {
   description = "CPU units for the task"
   type        = number
-  default     = 512 # Default value set in reusable module
+  default     = 8192 # Must be >= sum of all container CPU (4096 + 4096 for TwistlockDefender)
 }
 
 variable "memory" {
@@ -38,7 +38,7 @@ variable "memory" {
 variable "task_memory" {
   description = "Memory in MiB for the task"
   type        = number
-  default     = 1024 # Default value set in reusable module
+  default     = 30720 # Must be >= sum of all container memory (16384 + 16384 for TwistlockDefender = 32768, using 30720 as valid Fargate value)
 }
 
 variable "min" {
