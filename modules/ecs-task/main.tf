@@ -14,9 +14,6 @@ locals {
           hostPort      = var.app_port
         }
       ]
-      command = [
-        "-Dsonar.search.javaAdditionalOpts=-Dnode.store.allow_mmap=false"
-      ]
       environment = var.env_vars
       linuxParameters = {
         "initProcessEnabled" : true
@@ -34,7 +31,7 @@ locals {
           "awslogs-create-group" : "true",
           "awslogs-group" : "${var.environment}_fargate_ecs",
           "awslogs-region" : "${var.region}",
-          "awslogs-stream-prefix" : "${var.environment}-sonarqube"
+          "awslogs-stream-prefix" : "${var.environment}-${var.app_name}"
         }
       }
     },
@@ -72,7 +69,7 @@ locals {
           "awslogs-create-group" : "true",
           "awslogs-group" : "${var.environment}_fargate_ecs",
           "awslogs-region" : "${var.region}",
-          "awslogs-stream-prefix" : "${var.environment}-sonarqube"
+          "awslogs-stream-prefix" : "${var.environment}-${var.app_name}"
         }
       }
       portMappings = []
