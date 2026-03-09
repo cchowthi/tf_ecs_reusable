@@ -28,10 +28,13 @@ locals {
           "awslogs-stream-prefix" : "${var.environment}-${var.app_name}"
         }
       }
-      requires_compatibilities = ["FARGATE"]
-      network_mode             = "awsvpc"
-      execution_role_arn       = aws_iam_role.ecs_execution_role.arn
-      task_role_arn            = aws_iam_role.ecs_execution_role.arn
+      healthCheck = {
+        command     = ["CMD-SHELL", "curl -f http://localhost:${var.app_port}/health || exit 1"]
+        interval    = 30
+        timeout     = 5
+        retries     = 3
+        startPeriod = 60
+      }
     },
     # TwistlockDefender sidecar container
     {
