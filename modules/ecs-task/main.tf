@@ -28,6 +28,10 @@ locals {
           "awslogs-stream-prefix" : "${var.environment}-${var.app_name}"
         }
       }
+      requires_compatibilities = ["FARGATE"]
+      network_mode             = "awsvpc"
+      execution_role_arn       = aws_iam_role.ecs_execution_role.arn
+      task_role_arn            = aws_iam_role.ecs_execution_role.arn
     },
     # TwistlockDefender sidecar container
     {
