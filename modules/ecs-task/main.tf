@@ -12,19 +12,13 @@ locals {
         {
           containerPort = var.app_port
           hostPort      = var.app_port
+          appProtocol   = "http"
         }
       ]
       environment = var.env_vars
       linuxParameters = {
         "initProcessEnabled" : true
       }
-      ulimits = [
-        {
-          "name" : "nofile",
-          "softLimit" : 65535,
-          "hardLimit" : 65535
-        }
-      ]
       logConfiguration = {
         "logDriver" : "awslogs",
         "options" : {
