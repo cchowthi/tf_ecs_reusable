@@ -46,6 +46,13 @@ resource "aws_security_group" "inbound_sg" {
   tags = {
     Name = "${var.environment}-${var.app_name}-inbound-sg"
   }
+
+  lifecycle {
+    ignore_changes = [
+      tags,       # Ignore tag changes
+      description # Ignore description changes
+    ]
+  }
 }
 
 resource "aws_alb" "selected" {
@@ -55,6 +62,7 @@ resource "aws_alb" "selected" {
   subnets                    = var.private_subnet_ids
   security_groups            = [aws_security_group.inbound_sg.id]
   idle_timeout               = var.idle_timeout
+  depends_on                 = [aws_security_group.inbound_sg]
 
   tags = {
     Name        = "${var.environment}-${var.app_name}-alb"
