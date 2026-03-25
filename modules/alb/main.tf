@@ -70,7 +70,7 @@ resource "aws_alb" "selected" {
 }
 
 # HTTPS Listener
-resource "aws_alb_listener" "https" {
+resource "aws_alb_listener" "selected" {
   load_balancer_arn = aws_alb.selected.arn
   port              = 443
   protocol          = "HTTPS"
