@@ -77,4 +77,6 @@ resource "aws_ecs_service" "app" {
     Environment      = var.environment
     docker_image_sha = var.image_sha
   }
+
+  force_new_deployment = true
 }
