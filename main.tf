@@ -72,4 +72,6 @@ module "ecs_service" {
   user               = var.user
   vpc_id             = var.vpc_id
   image_sha          = module.docker.image_sha
+
+  depends_on = [module.docker]
 }
