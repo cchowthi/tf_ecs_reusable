@@ -167,3 +167,8 @@ variable "private_subnet_ids" {
   description = "Private Subnet IDs"
   type        = list(string)
 }
+
+variable "cert_arn" {
+  description = "ARN of the certificate to use for the API Gateway custom domain name"
+  type        = string
+}

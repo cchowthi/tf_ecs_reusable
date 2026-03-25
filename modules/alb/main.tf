@@ -1,7 +1,7 @@
 resource "aws_alb_target_group" "selected" {
   name        = "${var.environment}-${var.app_name}"
   port        = var.app_port
-  protocol    = "HTTP"
+  protocol    = "HTTPS"
   vpc_id      = var.vpc_id
   target_type = "ip"
 
@@ -28,12 +28,11 @@ resource "aws_security_group" "inbound_sg" {
 
   ingress {
     description = "HTTPS from Internal Networks"
-    from_port   = 80
-    to_port     = 80
+    from_port   = 443
+    to_port     = 443
     protocol    = "tcp"
     cidr_blocks = ["10.0.0.0/8"]
   }
-
 
   egress {
     description = "outbound to anywhere"
@@ -69,11 +68,14 @@ resource "aws_alb" "selected" {
     Environment = var.environment
   }
 }
-#tfsec:ignore:aws-elb-http-not-used
-resource "aws_alb_listener" "selected" {
+
+# HTTPS Listener
+resource "aws_alb_listener" "https" {
   load_balancer_arn = aws_alb.selected.arn
-  port              = 80
-  protocol          = "HTTP"
+  port              = 443
+  protocol          = "HTTPS"
+  ssl_policy        = "ELBSecurityPolicy-TLS-1-2-2017-01"
+  certificate_arn   = var.cert_arn
   depends_on        = [aws_alb_target_group.selected]
 
   default_action {

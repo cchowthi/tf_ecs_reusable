@@ -43,6 +43,10 @@ EOT
 
 }
 
+output "detected_app_files" {
+  value = local.app_files_list
+}
+
 resource "null_resource" "debug_all_files" {
   provisioner "local-exec" {
     command = <<EOT

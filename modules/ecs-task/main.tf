@@ -12,7 +12,7 @@ locals {
         {
           containerPort = var.app_port
           hostPort      = var.app_port
-          appProtocol   = "http"
+          appProtocol   = "https"
         }
       ]
       environment = var.env_vars
@@ -61,7 +61,7 @@ locals {
         command     = ["/usr/local/bin/defender", "fargate", "healthcheck"]
         interval    = 5
         retries     = 3
-        startPeriod = 1
+        startPeriod = 5
         timeout     = 5
       }
       logConfiguration = {
@@ -70,7 +70,7 @@ locals {
           "awslogs-create-group" : "true",
           "awslogs-group" : "${var.environment}_fargate_ecs",
           "awslogs-region" : "${var.region}",
-          "awslogs-stream-prefix" : "${var.environment}-${var.app_name}"
+          "awslogs-stream-prefix" : "${var.environment}-${var.app_name}-twistlock"
         }
       }
       portMappings = []

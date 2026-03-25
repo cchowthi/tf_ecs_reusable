@@ -69,3 +69,8 @@ variable "vpc_id" {
   description = "VPC ID"
   type        = string
 }
+
+variable "cert_arn" {
+  description = "ARN of the certificate to use for the API Gateway custom domain name"
+  type        = string
+}

@@ -13,6 +13,7 @@ module "alb" {
   timeout                    = var.timeout
   unhealthy_threshold        = var.unhealthy_threshold
   vpc_id                     = var.vpc_id
+  cert_arn                   = var.cert_arn
 }
 
 module "ecr" {
