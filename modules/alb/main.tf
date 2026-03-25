@@ -1,7 +1,7 @@
 resource "aws_alb_target_group" "selected" {
   name        = "${var.environment}-${var.app_name}"
   port        = var.app_port
-  protocol    = "HTTPS"
+  protocol    = "HTTP"
   vpc_id      = var.vpc_id
   target_type = "ip"
 
