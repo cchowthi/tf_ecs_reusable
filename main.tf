@@ -71,4 +71,5 @@ module "ecs_service" {
   task_revision      = module.ecs_task.ecs_task_revision
   user               = var.user
   vpc_id             = var.vpc_id
+  image_sha          = module.docker.image_sha
 }

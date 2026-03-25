@@ -70,3 +70,8 @@ variable "user" {
   description = "ECS Docker User"
   type        = string
 }
+
+variable "image_sha" {
+  description = "The SHA256 digest of the Docker image"
+  type        = string
+}

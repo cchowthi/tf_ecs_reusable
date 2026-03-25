@@ -71,4 +71,8 @@ resource "aws_ecs_service" "app" {
 
   # https://github.com/hashicorp/terraform/issues/12634
   depends_on = [var.alb_listener_arn]
+
+  triggers = {
+    docker_image_sha = var.image_sha
+  }
 }

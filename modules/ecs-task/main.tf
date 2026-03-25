@@ -12,7 +12,7 @@ locals {
         {
           containerPort = var.app_port
           hostPort      = var.app_port
-          appProtocol   = "https"
+          appProtocol   = "http"
         }
       ]
       environment = var.env_vars
