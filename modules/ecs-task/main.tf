@@ -139,8 +139,8 @@ resource "aws_iam_role_policy" "ecs_execution_policy" {
         ]
       },
       {
-        "Effect" : "Allow",
-        "Action" : [
+        Effect : "Allow",
+        Action : [
           "s3:PutObject",
           "s3:GetObject",
           "s3:DeleteObject",
@@ -149,7 +149,7 @@ resource "aws_iam_role_policy" "ecs_execution_policy" {
           "s3:GetObjectACL",
           "s3:PutObjectACL"
         ],
-        "Resource" : "arn:aws:s3:::${var.bucket_name}/*"
+        Resource : "arn:aws:s3:::${var.bucket_name}/*"
       },
       {
         Effect = "Allow"
@@ -158,6 +158,13 @@ resource "aws_iam_role_policy" "ecs_execution_policy" {
           "ssmmessages:CreateDataChannel",
           "ssmmessages:OpenControlChannel",
           "ssmmessages:OpenDataChannel"
+        ]
+        Resource = "*"
+      },
+      {
+        Effect = "Allow"
+        Action = [
+          "secretsmanager:GetSecretValue"
         ]
         Resource = "*"
       }
