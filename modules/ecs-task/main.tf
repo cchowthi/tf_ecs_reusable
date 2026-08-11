@@ -140,7 +140,8 @@ resource "aws_iam_role_policy" "ecs_execution_policy" {
           "s3:DeleteObjectVersion",
           "s3:GetObjectVersion",
           "s3:GetObjectACL",
-          "s3:PutObjectACL"
+          "s3:PutObjectACL",
+          "s3:ListBucket"
         ],
         Resource : "arn:aws:s3:::${var.bucket_name}/*"
       },
