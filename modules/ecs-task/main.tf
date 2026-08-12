@@ -146,6 +146,13 @@ resource "aws_iam_role_policy" "ecs_execution_policy" {
         Resource : "arn:aws:s3:::${var.bucket_name}/*"
       },
       {
+        Effect : "Allow",
+        Action : [
+          "s3:ListBucket"
+        ],
+        Resource : "arn:aws:s3:::${var.bucket_name}"
+      },
+      {
         Effect = "Allow"
         Action = [
           "ssmmessages:CreateControlChannel",
