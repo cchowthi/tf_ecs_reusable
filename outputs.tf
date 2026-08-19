@@ -48,28 +48,33 @@ output "task_role_arn" {
 # ALB outputs
 output "alb_dns_name" {
   description = "DNS name of the Application Load Balancer"
-  value       = module.alb.alb_dns_name
+  value       = aws_alb.selected.dns_name
 }
 
 output "alb_arn" {
   description = "ARN of the Application Load Balancer"
-  value       = module.alb.alb_arn
+  value       = aws_alb.selected.arn
 }
 
 output "alb_listener_arn" {
-  description = "ARN of the ALB listener"
+  description = "ARN of the ALB HTTPS listener"
   value       = module.alb.alb_listener_arn
 }
 
-output "target_group_arn" {
-  description = "ARN of the target group"
+output "alb_target_group_arn" {
+  description = "ARN of the ALB target group"
   value       = module.alb.alb_target_group_arn
+}
+
+output "alb_security_group_id" {
+  description = "Security group ID for the ALB"
+  value       = module.alb.security_group_id
 }
 
 # ECR/Docker outputs
 output "ecr_repository_url" {
   description = "URL of the ECR repository"
-  value       = module.ecr.repository_url
+  value       = module.ecr.ecr_reg
 }
 
 output "docker_image_uri" {
