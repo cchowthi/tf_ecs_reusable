@@ -74,7 +74,7 @@ output "alb_security_group_id" {
 # ECR/Docker outputs
 output "ecr_repository_url" {
   description = "URL of the ECR repository"
-  value       = module.ecr.ecr_reg
+  value       = module.docker.ecr_reg
 }
 
 output "docker_image_uri" {
