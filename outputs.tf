@@ -48,12 +48,12 @@ output "task_role_arn" {
 # ALB outputs
 output "alb_dns_name" {
   description = "DNS name of the Application Load Balancer"
-  value       = aws_alb.selected.dns_name
+  value       = module.alb.alb_dns_name
 }
 
 output "alb_arn" {
   description = "ARN of the Application Load Balancer"
-  value       = aws_alb.selected.arn
+  value       = module.alb.alb_arn
 }
 
 output "alb_listener_arn" {
